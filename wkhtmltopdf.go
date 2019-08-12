@@ -252,7 +252,7 @@ func (pdfg *PDFGenerator) findPath() error {
 	if dir == "" {
 		return fmt.Errorf("%s not found", exe)
 	}
-	path, err = exec.LookPath(filepath.Join(dir, exe))
+	path, err := exec.LookPath(filepath.Join(dir, exe))
 	if err == nil && path != "" {
 		binPath.Set(path)
 		pdfg.binPath = path
@@ -264,7 +264,7 @@ func (pdfg *PDFGenerator) findPath() error {
 	if err != nil {
 		return err
 	}
-	path, err := exec.LookPath(filepath.Join(exeDir, exe))
+	path, err = exec.LookPath(filepath.Join(exeDir, exe))
 	if err == nil && path != "" {
 		binPath.Set(path)
 		pdfg.binPath = path
