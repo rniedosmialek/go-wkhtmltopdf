@@ -239,27 +239,15 @@ func (pdfg *PDFGenerator) WriteFile(filename string) error {
 //a running program once it has been found
 func (pdfg *PDFGenerator) findPath() error {
 	const exe = "wkhtmltopdf"
+	
+	// Cached
 	pdfg.binPath = GetPath()
 	if pdfg.binPath != "" {
-		// wkhtmltopdf has already already found, return
+		// wkhtmltopdf has already found, return
 		return nil
 	}
-	exeDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
-		return err
-	}
-	path, err := exec.LookPath(filepath.Join(exeDir, exe))
-	if err == nil && path != "" {
-		binPath.Set(path)
-		pdfg.binPath = path
-		return nil
-	}
-	path, err = exec.LookPath(exe)
-	if err == nil && path != "" {
-		binPath.Set(path)
-		pdfg.binPath = path
-		return nil
-	}
+	
+	// Environment
 	dir := os.Getenv("WKHTMLTOPDF_PATH")
 	if dir == "" {
 		return fmt.Errorf("%s not found", exe)
@@ -270,6 +258,27 @@ func (pdfg *PDFGenerator) findPath() error {
 		pdfg.binPath = path
 		return nil
 	}
+	
+	// Application Path
+	exeDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		return err
+	}
+	path, err := exec.LookPath(filepath.Join(exeDir, exe))
+	if err == nil && path != "" {
+		binPath.Set(path)
+		pdfg.binPath = path
+		return nil
+	}
+	
+	// Local PATH
+	path, err = exec.LookPath(exe)
+	if err == nil && path != "" {
+		binPath.Set(path)
+		pdfg.binPath = path
+		return nil
+	}
+	
 	return fmt.Errorf("%s not found", exe)
 }
 
